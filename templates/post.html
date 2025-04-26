@@ -1,0 +1,15 @@
+{{ define "post" }}
+<article class="post">
+    <h1>{{ .Post.Title }}</h1>
+    <div class="post-meta">
+        Posted on {{ .Post.Created.Format "Jan 2, 2006" }}
+    </div>
+    <div class="post-content">
+        {{ .Post.Content }}
+    </div>
+    <div class="post-actions">
+        <a href="/edit/{{ .Post.ID }}">Edit</a>
+        <a href="/delete/{{ .Post.ID }}">Delete</a>
+    </div>
+</article>
+{{ end }}

@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: blog-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postmaster
+      POSTGRES_PASSWORD: SuperSecure@123
+      POSTGRES_DB: blogdb
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d/migrations
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local

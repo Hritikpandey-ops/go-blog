@@ -1,0 +1,15 @@
+{{ define "edit_post" }}
+<div class = "edit-form">
+<h2>Edit Post</h2>
+<form method="POST">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" value="{{ .Title }}" required><br><br>
+
+    <label for="content">Content:</label><br>
+    <textarea id="content" name="content" required>{{ .Content }}</textarea><br><br>
+
+    <button type="submit">Update Post</button>
+</form>
+</div>
+
+{{ end }}

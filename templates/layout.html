@@ -1,0 +1,45 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css?v=1">
+</head>
+<body>
+    <header>
+        <nav class="navbar">  <!-- Added navbar class -->
+            <div class="container">
+                <div class="logo">My Blog</div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/create">Create Post</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {{ template "content" . }}
+    </main>
+
+    <footer>
+        <p>&copy; {{ .Year }} My Blog. All rights reserved.</p>
+    </footer>
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+          hamburger.classList.toggle('active');
+          navLinks.classList.toggle('active');
+        });
+      </script>
+</body>
+</html>
+{{ end }}

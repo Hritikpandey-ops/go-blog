@@ -3,7 +3,7 @@ APP_NAME=blog-site
 
 # Start server
 run:
-	go run server/cmd/main.go  # <-- THIS MUST BE A TAB, NOT SPACES
+	go run server/cmd/main.go
 
 # Build binary
 build:
@@ -30,7 +30,7 @@ db-down:
 	docker-compose down
 
 # Reset DB (Dangerous in prod)
-db-reset:
+local_up:
 	docker-compose down -v
 	docker-compose up -d
 
@@ -44,7 +44,7 @@ tidy:
 # make run	Runs your Go server (main.go)
 # make db-up	Starts PostgreSQL using your docker-compose.yml
 # make db-down	Stops PostgreSQL
-# make db-reset	Stops PostgreSQL and deletes all volumes (fresh DB)
+# make local_up	Stops PostgreSQL and deletes all volumes (fresh DB)
 # make tidy	Runs go mod tidy
 # make build	Builds the server binary
 # make start	Builds and runs the binary

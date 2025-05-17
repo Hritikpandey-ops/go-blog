@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/Hritikpandey-ops/blog-site/enums"
+	"github.com/segmentio/ksuid"
 )
 
 type User struct {
-	ID        string         `json:"id"`
+	ID        ksuid.KSUID    `json:"id"`
 	Name      string         `json:"name"`
 	Email     string         `json:"email"`
 	Password  string         `json:"-"`

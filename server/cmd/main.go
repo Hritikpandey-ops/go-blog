@@ -12,6 +12,7 @@ import (
 	"github.com/Hritikpandey-ops/blog-site/config"
 	"github.com/Hritikpandey-ops/blog-site/db"
 	"github.com/Hritikpandey-ops/blog-site/handlers"
+	"github.com/Hritikpandey-ops/blog-site/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -24,8 +25,17 @@ func handleError(err error, message string) {
 func setupRoutes(r chi.Router) {
 	db := db.GetDB()
 
+	// Public routes
 	r.Post("/register", handlers.Register(db))
 	r.Post("/login", handlers.Login(db))
+
+	// Protected routes (require auth)
+	r.Group(func(protected chi.Router) {
+		protected.Use(middleware.AuthMiddleware)
+
+		// Example protected route
+		//protected.Get("/profile", handlers.UserProfile(db)) // Example handler
+	})
 }
 
 func main() {

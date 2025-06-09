@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/segmentio/ksuid"
+	"github.com/google/uuid"
 )
 
-// GenerateAuthToken generates a secure token prefixed with the user's ID.
-func GenerateAuthToken(userID ksuid.KSUID) (string, error) {
+func GenerateAuthToken(userID uuid.UUID) (string, error) {
 	const tokenSize = 32 // 32 bytes = 256 bits
 
 	bytes := make([]byte, tokenSize)
@@ -20,21 +19,19 @@ func GenerateAuthToken(userID ksuid.KSUID) (string, error) {
 
 	randomPart := hex.EncodeToString(bytes)
 
-	// Token format: userID.randomHex
 	token := fmt.Sprintf("%s.%s", userID.String(), randomPart)
 	return token, nil
 }
 
-// ExtractUserIDFromToken extracts the userID (KSUID) from a token of format: userID.randomHex
-func ExtractUserIDFromToken(token string) (ksuid.KSUID, error) {
+func ExtractUserIDFromToken(token string) (uuid.UUID, error) {
 	parts := strings.SplitN(token, ".", 2)
 	if len(parts) != 2 {
-		return ksuid.Nil, fmt.Errorf("invalid token format: expected 'userID.randomHex'")
+		return uuid.Nil, fmt.Errorf("invalid token format: expected 'userID.randomHex'")
 	}
 
-	userID, err := ksuid.Parse(parts[0])
+	userID, err := uuid.Parse(parts[0])
 	if err != nil {
-		return ksuid.Nil, fmt.Errorf("invalid user ID in token: %w", err)
+		return uuid.Nil, fmt.Errorf("invalid user ID in token: %w", err)
 	}
 
 	return userID, nil

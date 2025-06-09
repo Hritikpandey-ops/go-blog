@@ -2,14 +2,16 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/Hritikpandey-ops/blog-site/enums"
-	"github.com/segmentio/ksuid"
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 type User struct {
-	ID        ksuid.KSUID    `json:"id"`
+	ID        uuid.UUID      `json:"id"`
 	Name      string         `json:"name"`
 	Email     string         `json:"email"`
 	Password  string         `json:"-"`
@@ -20,13 +22,19 @@ type User struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 }
 
-// Save inserts the User into the database
+// Save inserts the User into the database.
 func (u *User) Save(db *sql.DB) error {
+	if db == nil {
+		return fmt.Errorf("database connection is nil")
+	}
+
 	query := `
 		INSERT INTO users (name, email, password, role, avatar_url, bio)
-		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, created_at, updated_at;`
+		VALUES ($1, $2, $3, $4, $5, $6)
+		RETURNING id, created_at, updated_at;
+	`
 
-	err := db.QueryRow(
+	row := db.QueryRow(
 		query,
 		u.Name,
 		u.Email,
@@ -34,7 +42,18 @@ func (u *User) Save(db *sql.DB) error {
 		u.Role,
 		u.AvatarURL,
 		u.Bio,
-	).Scan(&u.ID, &u.CreatedAt, &u.UpdatedAt)
+	)
 
-	return err
+	err := row.Scan(&u.ID, &u.CreatedAt, &u.UpdatedAt)
+	if err != nil {
+		// Check for PostgreSQL unique violation
+		if pqErr, ok := err.(*pq.Error); ok {
+			if pqErr.Code == "23505" && pqErr.Constraint == "users_email_key" {
+				return fmt.Errorf("email '%s' is already registered", u.Email)
+			}
+		}
+		return fmt.Errorf("failed to insert user: %w", err)
+	}
+
+	return nil
 }
